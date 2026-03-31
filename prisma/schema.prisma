@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum TransactionStatus {
+  DRAFT
+  PENDING
+  SUBMITTED
+  FAILED
+  CANCELLED
+}
+
+model User {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  username         String        @unique
+  email            String        @unique
+  mobileNumber     String?
+  passwordHash     String
+  role             UserRole      @default(CUSTOMER)
+  wallets          Wallet[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Wallet {
+  id                        String        @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  encryptedRecoveryPhrase   String
+  network                   String
+  addresses                 WalletAddress[]
+  transactions              Transaction[]
+  owner                     User          @relation(fields: [ownerId], references: [id])
+  ownerId                   String        @db.ObjectId
+  createdAt                 DateTime      @default(now())
+}
+
+model WalletAddress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  label     String
+  address   String
+  network   String
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  assetSymbol      String
+  amount           Float
+  estimatedFee     Float
+  recipientAddress String?
+  senderAddress    String?
+  network          String
+  status           TransactionStatus
+  txHash           String?
+  riskWarning      String?
+  wallet           Wallet            @relation(fields: [walletId], references: [id])
+  walletId         String            @db.ObjectId
+  createdAt        DateTime          @default(now())
+}
