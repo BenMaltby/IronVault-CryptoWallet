@@ -64,7 +64,7 @@ Using the cluster root URL without `/ironvault` or another database name will ca
 
 ## Features that we need to add
 
-1. ~~Register~~/login
+1. ~~Register~~/~~login~~
 2. Create/import wallet
 3. Receive funds
 4. Send funds with validation + confirmation
