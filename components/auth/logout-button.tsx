@@ -1,9 +1,15 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function LogoutButton() {
+type LogoutButtonProps = {
+  className?: string;
+  label?: string;
+};
+
+export function LogoutButton({ className, label = 'Sign out' }: LogoutButtonProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,11 +30,14 @@ export function LogoutButton() {
   return (
     <button
       type="button"
-      className="w-full rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:border-slate-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+      className={cn(
+        'w-full rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:border-slate-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-70',
+        className,
+      )}
       onClick={handleLogout}
       disabled={isSubmitting}
     >
-      {isSubmitting ? 'Logging out...' : 'Log out'}
+      {isSubmitting ? 'Signing out...' : label}
     </button>
   );
 }

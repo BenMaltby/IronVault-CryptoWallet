@@ -1,19 +1,64 @@
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { LogoutButton } from '@/components/auth/logout-button';
+import { getSession } from '@/lib/session';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center gap-8 px-6 py-16">
-      <div className="max-w-3xl">
-        <p className="mb-3 text-sm uppercase tracking-[0.3em] text-emerald-300">IronVault</p>
-        <h1 className="text-4xl font-bold tracking-tight md:text-6xl">A beginner friendlty crypto wallet.</h1>
-        <p className="mt-6 text-lg text-slate-300">
-          Crypto with confidence. IronVault is a secure and user-friendly crypto wallet designed for beginners. Manage your assets, track transactions, and explore the world of crypto with ease.
-        </p>
-      </div>
-      <div className="flex gap-4">
-        <Button href="/dashboard">Open dashboard</Button>
-        <Button href="/register" className="bg-slate-100 text-slate-950 hover:bg-white">Create account</Button>
-      </div>
+    <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
+      <nav className="flex items-center justify-between border-b border-slate-800 pb-6">
+        <div>
+          {session ? (
+            <Link
+              href="/settings"
+              className="rounded-xl px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-900 hover:text-white"
+            >
+              {session.user.username}
+            </Link>
+          ) : null}
+        </div>
+        <div className="flex items-center gap-3">
+          {session ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+              >
+                Dashboard
+              </Link>
+              <LogoutButton
+                label="Sign out"
+                className="w-auto border-transparent bg-emerald-500 px-4 text-slate-950 hover:border-transparent hover:bg-emerald-400 hover:text-slate-950"
+              />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-xl px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+      <section className="flex min-h-[calc(100vh-140px)] items-center">
+        <div className="max-w-3xl">
+          <p className={`text-5xl uppercase tracking-[0.2em] text-emerald-300 md:text-7xl`}>IronVault</p>
+          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">A beginner friendlty crypto wallet.</h1>
+          <p className="mt-6 text-lg text-slate-300">
+            Crypto with confidence. IronVault is a secure and user-friendly crypto wallet designed for beginners. Manage your assets, track transactions, and explore the world of crypto with ease.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
