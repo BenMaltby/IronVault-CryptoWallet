@@ -1,8 +1,8 @@
-# IronVault Starter
+# IronVault
 
-A student-friendly starter repository for the **IronVault** crypto wallet MVP.
+Repository for the **IronVault** crypto wallet.
 
-## Recommended stack
+## Stack
 
 - **Next.js (App Router) + React + TypeScript** for the web app and API routes
 - **Node.js runtime** through Next.js route handlers
@@ -12,9 +12,9 @@ A student-friendly starter repository for the **IronVault** crypto wallet MVP.
 
 ## Why this stack
 
-This project's own reports already lean toward a browser-based React front end, a Node.js backend, and MongoDB for non-sensitive data. They also explicitly say sensitive information like private keys and recovery phrases should **not** be stored on the backend in plaintext, and that the prototype should keep complexity small and focus on core features first.
+The reports already leans toward a browser-based React front end, a Node.js backend, and MongoDB for non-sensitive data. We explicitly say sensitive information like private keys and recovery phrases should **not** be stored on the backend in plaintext, and that the prototype should keep complexity small and focus on core features first.
 
-## What is included
+## Current state
 
 - Landing page
 - Dashboard
@@ -34,7 +34,7 @@ This project's own reports already lean toward a browser-based React front end, 
 
 ## Important security note
 
-This is a **prototype starter**, not a production wallet. Do not use this code to hold real assets. Build and demo only against **testnets**.
+This is a **prototype starter**, not a production wallet. We are not using this code to hold real assets. This Build and demo is only used against **testnets**.
 
 ## Quick start
 
@@ -47,7 +47,7 @@ npm run seed
 npm run dev
 ```
 
-Your MongoDB Atlas `DATABASE_URL` must include a database name after `.net/`, for example:
+MongoDB Atlas `DATABASE_URL` must include a database name after `.net/`, for example:
 
 ```bash
 DATABASE_URL="mongodb+srv://<username>:<password>@cluster-name.mongodb.net/ironvault?retryWrites=true&w=majority"
@@ -62,7 +62,7 @@ Using the cluster root URL without `/ironvault` or another database name will ca
 3. **Wallet/security team**: encryption, backup/export, auto-lock, address validation
 4. **Integration team**: testnet RPC, live pricing, transaction polling, CI/CD
 
-## MVP order
+## Features that we need to add
 
 1. Register/login
 2. Create/import wallet
