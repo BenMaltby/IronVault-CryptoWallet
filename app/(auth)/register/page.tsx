@@ -13,23 +13,28 @@ type RegisterFormData = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  // Controlled form state keeps the inputs and request payload in sync.
   const [formData, setFormData] = useState<RegisterFormData>({
     username: '',
     email: '',
     password: '',
   });
+  // These flags drive the feedback text and submit button behaviour.
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Lets the user temporarily reveal the password they are typing.
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Clear old messages before starting a new registration attempt.
     setError('');
     setSuccessMessage('');
     setIsSubmitting(true);
 
     try {
+      // The API route handles validation, password hashing, and MongoDB persistence.
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -55,6 +60,7 @@ export default function RegisterPage() {
         return;
       }
 
+      // Reset the form after a successful account creation.
       setSuccessMessage(data.message ?? 'Account created successfully.');
       setFormData({
         username: '',
@@ -80,6 +86,7 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-bold">Create account</h1>
         <p className="mt-2 text-sm text-slate-400">Register a new IronVault account to get started.</p>
         <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
+          {/* Basic identity fields sent directly to the registration API. */}
           <input
             className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2"
             placeholder="Username"
@@ -97,6 +104,7 @@ export default function RegisterPage() {
             autoComplete="email"
             required
           />
+          {/* The password input is wrapped so the visibility toggle can sit inside the field. */}
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -116,9 +124,10 @@ export default function RegisterPage() {
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               aria-pressed={showPassword}
             >
-              {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
+          {/* Only one of these messages is usually visible, depending on the request outcome. */}
           {error ? <p className="text-sm text-rose-400">{error}</p> : null}
           {successMessage ? <p className="text-sm text-emerald-400">{successMessage}</p> : null}
           <button
