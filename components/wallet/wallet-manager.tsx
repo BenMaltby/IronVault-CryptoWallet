@@ -2,22 +2,10 @@
 
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-type WalletSummary = {
-  id: string;
-  name: string;
-  network: string;
-  createdAt: string | Date;
-  addresses: Array<{
-    id: string;
-    label: string;
-    address: string;
-    network: string;
-  }>;
-};
+import { WalletSummary, WalletSummaryItem } from '@/components/wallet/wallet-summary';
 
 type WalletManagerProps = {
-  wallets: WalletSummary[];
+  wallets: WalletSummaryItem[];
 };
 
 type CreateWalletForm = {
@@ -88,47 +76,9 @@ export function WalletManager({ wallets }: WalletManagerProps) {
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+      <WalletSummary wallets={wallets} />
       <div className="card p-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-semibold">Your wallets</h2>
-            <p className="mt-1 text-sm text-slate-400">
-              This account currently has {wallets.length} wallet{wallets.length === 1 ? '' : 's'}.
-            </p>
-          </div>
-        </div>
-        <div className="mt-6 grid gap-4">
-          {wallets.length > 0 ? (
-            wallets.map((wallet) => (
-              <div key={wallet.id} className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-white">{wallet.name}</p>
-                    <p className="mt-1 text-sm text-slate-400">{wallet.network}</p>
-                  </div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    {new Date(wallet.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="mt-4 grid gap-2">
-                  {wallet.addresses.map((address) => (
-                    <div key={address.id} className="rounded-xl border border-slate-800 px-3 py-2">
-                      <p className="text-xs uppercase tracking-[0.16em] text-slate-500">{address.label}</p>
-                      <p className="mt-1 break-all font-mono text-sm text-slate-200">{address.address}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="rounded-2xl border border-dashed border-slate-700 p-6 text-sm text-slate-400">
-              No wallets created yet. Use the form to create your first wallet.
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="card p-6">
-        <h2 className="text-xl font-semibold">Create another wallet</h2>
+        <h2 className="text-xl font-semibold">Create wallet</h2>
         <p className="mt-1 text-sm text-slate-400">Each wallet gets its own encrypted recovery phrase and main address.</p>
         <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
           <label className="grid gap-2">

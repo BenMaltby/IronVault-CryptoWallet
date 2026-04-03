@@ -1,5 +1,5 @@
 import { Sidebar } from '@/components/layout/sidebar';
-import { WalletManager } from '@/components/wallet/wallet-manager';
+import { WalletSummary } from '@/components/wallet/wallet-summary';
 import { AssetTable } from '@/components/wallet/asset-table';
 import { SummaryCards } from '@/components/wallet/summary-cards';
 import { TransactionList } from '@/components/wallet/transaction-list';
@@ -59,7 +59,7 @@ export default async function DashboardPage() {
             Logged in as {session.user.username} ({roleLabels[session.user.role]}).
           </p>
         </div>
-        <WalletManager wallets={wallets} />
+        <WalletSummary wallets={wallets} compact />
         <SummaryCards totalValue={totalValue} totalAssets={assetBalances.length} pendingTransactions={pendingTransactions} />
         <AssetTable assets={assetBalances} />
         <TransactionList transactions={transactions} />

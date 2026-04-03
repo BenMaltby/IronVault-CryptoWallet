@@ -1,11 +1,12 @@
 import type { Route } from 'next';
 import Link from 'next/link';
-import { Wallet, ArrowUpRight, ArrowDownLeft, History, Settings, Shield, House } from 'lucide-react';
+import { Wallet, ArrowUpRight, ArrowDownLeft, History, Settings, Shield, House, WalletCards } from 'lucide-react';
 import { LogoutButton } from '@/components/auth/logout-button';
 import { requireSession, roleLabels } from '@/lib/session';
 
 const baseItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Wallet },
+  { href: '/wallets', label: 'Wallets', icon: WalletCards },
   { href: '/send', label: 'Send', icon: ArrowUpRight },
   { href: '/receive', label: 'Receive', icon: ArrowDownLeft },
   { href: '/transactions', label: 'History', icon: History },
