@@ -4,10 +4,11 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, shortenAddress } from '@/lib/utils';
-import type { WalletOption, SupportedNetwork } from '@/types';
+import type { WalletOption, SupportedNetwork, Contact } from '@/types';
 
 type Props = {
   wallets: WalletOption[];
+  contacts: Contact[];
 };
 
 type Step = 'input' | 'confirmation' | 'result';
@@ -44,7 +45,7 @@ type Result = {
 
 const SUPPORTED_ASSETS = ['ETH', 'MATIC', 'USDC'] as const;
 
-export function SendForm({ wallets }: Props) {
+export function SendForm({ wallets, contacts }: Props) {
   const router = useRouter();
 
   const firstWallet = wallets[0];
@@ -57,11 +58,25 @@ export function SendForm({ wallets }: Props) {
     amount: '',
     recipientSaved: false,
   });
+  const [selectedContactId, setSelectedContactId] = useState('');
   const [draft, setDraft] = useState<Draft | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [addressConfirmed, setAddressConfirmed] = useState(false);
+
+  function handleContactSelect(id: string) {
+    if (id === '') {
+      setSelectedContactId('');
+      setFormData((prev) => ({ ...prev, recipientAddress: '', recipientSaved: false }));
+    } else {
+      const contact = contacts.find((c) => c.id === id);
+      if (contact) {
+        setSelectedContactId(id);
+        setFormData((prev) => ({ ...prev, recipientAddress: contact.address, recipientSaved: true }));
+      }
+    }
+  }
 
   function handleWalletChange(walletId: string) {
     const selected = wallets.find((w) => w.id === walletId);
@@ -148,6 +163,7 @@ export function SendForm({ wallets }: Props) {
     setResult(null);
     setError('');
     setAddressConfirmed(false);
+    setSelectedContactId('');
     setFormData((prev) => ({
       ...prev,
       recipientAddress: '',
@@ -300,13 +316,36 @@ export function SendForm({ wallets }: Props) {
           </select>
         </label>
 
+        {contacts.length > 0 && (
+          <label className="grid gap-2 md:col-span-2">
+            <span className="text-sm text-slate-300">
+              Select from contacts <span className="text-slate-500">(optional)</span>
+            </span>
+            <select
+              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2"
+              value={selectedContactId}
+              onChange={(e) => handleContactSelect(e.target.value)}
+            >
+              <option value="">— Type an address manually —</option>
+              {contacts.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} — {shortenAddress(c.address)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         <label className="grid gap-2 md:col-span-2">
           <span className="text-sm text-slate-300">Recipient address</span>
           <input
             className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm"
             placeholder="0x..."
             value={formData.recipientAddress}
-            onChange={(e) => setFormData((prev) => ({ ...prev, recipientAddress: e.target.value }))}
+            onChange={(e) => {
+              setSelectedContactId('');
+              setFormData((prev) => ({ ...prev, recipientAddress: e.target.value, recipientSaved: false }));
+            }}
             required
           />
         </label>
@@ -351,19 +390,9 @@ export function SendForm({ wallets }: Props) {
           />
         </label>
 
-        <label className="flex cursor-pointer items-center gap-3 md:col-span-2">
-          <input
-            type="checkbox"
-            className="accent-emerald-500"
-            checked={formData.recipientSaved}
-            onChange={(e) => setFormData((prev) => ({ ...prev, recipientSaved: e.target.checked }))}
-          />
-          <span className="text-sm text-slate-300">Recipient is saved in my address book</span>
-        </label>
-
         {error ? <p className="text-sm text-rose-400 md:col-span-2">{error}</p> : null}
 
-        <div className="md:col-span-2">
+        <div className="flex items-center justify-between md:col-span-2">
           <button
             type="submit"
             disabled={isSubmitting}
@@ -371,6 +400,9 @@ export function SendForm({ wallets }: Props) {
           >
             {isSubmitting ? 'Validating...' : 'Review transaction'}
           </button>
+          <Link href="/contacts" className="text-xs text-slate-500 transition hover:text-slate-300">
+            Manage address book →
+          </Link>
         </div>
       </form>
     </div>

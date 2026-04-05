@@ -36,6 +36,7 @@ model User {
   role             UserRole      @default(BEGINNER_TRADER)
   sessions         Session[]
   wallets          Wallet[]
+  contacts         Contact[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
@@ -81,6 +82,15 @@ model WalletAddress {
   network   String
   wallet    Wallet   @relation(fields: [walletId], references: [id])
   walletId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  address   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String   @db.ObjectId
   createdAt DateTime @default(now())
 }
 

@@ -1,6 +1,6 @@
 import type { Route } from 'next';
 import Link from 'next/link';
-import { Wallet, ArrowUpRight, ArrowDownLeft, History, Settings, Shield, House, WalletCards } from 'lucide-react';
+import { Wallet, ArrowUpRight, ArrowDownLeft, History, Settings, Shield, House, WalletCards, BookUser } from 'lucide-react';
 import { LogoutButton } from '@/components/auth/logout-button';
 import { requireSession, roleLabels } from '@/lib/session';
 
@@ -10,6 +10,7 @@ const baseItems = [
   { href: '/send', label: 'Send', icon: ArrowUpRight },
   { href: '/receive', label: 'Receive', icon: ArrowDownLeft },
   { href: '/transactions', label: 'History', icon: History },
+  { href: '/contacts', label: 'Contacts', icon: BookUser },
   { href: '/settings', label: 'Settings', icon: Settings },
   // `satisfies` keeps the literal route strings while still enforcing typed-route safety.
 ] satisfies Array<{ href: Route; label: string; icon: typeof Wallet }>;

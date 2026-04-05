@@ -1,5 +1,12 @@
 export type SupportedNetwork = 'Ethereum Sepolia' | 'Polygon Amoy' | 'Base Sepolia';
 
+export interface Contact {
+  id: string;
+  name: string;
+  address: string;
+  createdAt: string;
+}
+
 export type TransactionDirection = 'SEND' | 'RECEIVE';
 
 export interface WalletOption {

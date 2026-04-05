@@ -3,16 +3,22 @@ import { Sidebar } from '@/components/layout/sidebar';
 import { SendForm } from '@/components/wallet/send-form';
 import { prisma } from '@/lib/prisma';
 import { requireSession } from '@/lib/session';
-import type { WalletOption } from '@/types';
+import type { WalletOption, Contact } from '@/types';
 
 export default async function SendPage() {
   const session = await requireSession();
 
-  const wallets = await prisma.wallet.findMany({
-    where: { ownerId: session.user.id },
-    include: { addresses: { take: 1, orderBy: { createdAt: 'asc' } } },
-    orderBy: { createdAt: 'asc' },
-  });
+  const [wallets, contactRows] = await Promise.all([
+    prisma.wallet.findMany({
+      where: { ownerId: session.user.id },
+      include: { addresses: { take: 1, orderBy: { createdAt: 'asc' } } },
+      orderBy: { createdAt: 'asc' },
+    }),
+    prisma.contact.findMany({
+      where: { ownerId: session.user.id },
+      orderBy: { name: 'asc' },
+    }),
+  ]);
 
   const walletOptions: WalletOption[] = wallets
     .filter((w) => w.addresses.length > 0)
@@ -22,6 +28,13 @@ export default async function SendPage() {
       network: w.network as WalletOption['network'],
       address: w.addresses[0].address,
     }));
+
+  const contacts: Contact[] = contactRows.map((c) => ({
+    id: c.id,
+    name: c.name,
+    address: c.address,
+    createdAt: c.createdAt.toISOString(),
+  }));
 
   return (
     <main className="mx-auto grid min-h-screen max-w-7xl gap-6 px-6 py-8 lg:grid-cols-[256px_1fr]">
@@ -46,7 +59,7 @@ export default async function SendPage() {
             </Link>
           </div>
         ) : (
-          <SendForm wallets={walletOptions} />
+          <SendForm wallets={walletOptions} contacts={contacts} />
         )}
       </section>
     </main>
