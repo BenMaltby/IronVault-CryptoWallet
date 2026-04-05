@@ -66,8 +66,8 @@ Using the cluster root URL without `/ironvault` or another database name will ca
 
 1. ~~Register~~/~~login~~
 2. ~~Create~~/import wallet
-3. Receive funds
+3. ~~Receive funds~~
 4. Send funds with validation + confirmation
-5. Transaction history
+5. ~~Transaction history~~
 6. Portfolio + live prices
 7. Optional AI warnings and alerts after core flows are stable

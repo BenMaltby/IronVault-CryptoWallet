@@ -17,3 +17,17 @@ uB9Q%DHouPLyI6NA3!
    - vault token seed shield amber network token seed shield seed network cipher
    - 0xd9bf32130d4e81466640bea7309a6959b4321a50
 
+
+// Above Accounts were created pre-transfer of funds was implemented
+trader user address: 0x9Bf2A3b0e487C8Dc1A7c8319143454B2e04f11Af
+ - secure network ledger token shield ledger wallet ledger wallet seed future network
+ - 0x0d8f5f47a764d5f56ef010ac4ed0b8288db87cf0
+
+
+Username: Ben
+Email: demo@email.co.uk 
+Type: Experienced Trader
+Password: uB9Q%DHouPLyI6NA3!
+Ben's Wallet:
+ - 0x0db03b12b778bec683b38e5de80e52c32a228b83
+ - wallet network shield amber shield token shield ledger wallet network shield cipher

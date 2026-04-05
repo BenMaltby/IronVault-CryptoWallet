@@ -5,7 +5,7 @@ import { encryptSecret, generateRecoveryPhrase } from '../lib/wallet';
 // Demo starting balances seeded per network so users can try sending immediately.
 const STARTING_BALANCES: Record<string, { assetSymbol: string; amount: number }[]> = {
   'Ethereum Sepolia': [
-    { assetSymbol: 'ETH', amount: 1.24 },
+    { assetSymbol: 'ETH', amount: 10.24 },
     { assetSymbol: 'USDC', amount: 500 },
   ],
   'Polygon Amoy': [
