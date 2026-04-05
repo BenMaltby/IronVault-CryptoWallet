@@ -10,6 +10,22 @@ const schema = z.object({
   network: z.enum(['Ethereum Sepolia', 'Polygon Amoy', 'Base Sepolia']),
 });
 
+// Starting balances given to every new wallet so demo users can try sending immediately.
+const STARTING_BALANCES: Record<string, { assetSymbol: string; amount: number }[]> = {
+  'Ethereum Sepolia': [
+    { assetSymbol: 'ETH', amount: 1.24 },
+    { assetSymbol: 'USDC', amount: 500 },
+  ],
+  'Polygon Amoy': [
+    { assetSymbol: 'MATIC', amount: 240 },
+    { assetSymbol: 'USDC', amount: 200 },
+  ],
+  'Base Sepolia': [
+    { assetSymbol: 'ETH', amount: 0.5 },
+    { assetSymbol: 'USDC', amount: 640 },
+  ],
+};
+
 export async function POST(request: Request) {
   const session = await getSession();
 
@@ -43,12 +59,19 @@ export async function POST(request: Request) {
       },
     },
     include: {
-      addresses: {
-        orderBy: {
-          createdAt: 'asc',
-        },
-      },
+      addresses: { orderBy: { createdAt: 'asc' } },
     },
+  });
+
+  // Create starting balances for the new wallet.
+  const seedBalances = STARTING_BALANCES[parsed.data.network] ?? [];
+  await prisma.balance.createMany({
+    data: seedBalances.map(({ assetSymbol, amount }) => ({
+      walletId: wallet.id,
+      assetSymbol,
+      network: parsed.data.network,
+      amount,
+    })),
   });
 
   return NextResponse.json({

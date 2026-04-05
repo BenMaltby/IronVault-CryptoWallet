@@ -2,6 +2,22 @@ import { prisma } from '../lib/prisma';
 import { hashPassword } from '../lib/auth';
 import { encryptSecret, generateRecoveryPhrase } from '../lib/wallet';
 
+// Demo starting balances seeded per network so users can try sending immediately.
+const STARTING_BALANCES: Record<string, { assetSymbol: string; amount: number }[]> = {
+  'Ethereum Sepolia': [
+    { assetSymbol: 'ETH', amount: 1.24 },
+    { assetSymbol: 'USDC', amount: 500 },
+  ],
+  'Polygon Amoy': [
+    { assetSymbol: 'MATIC', amount: 240 },
+    { assetSymbol: 'USDC', amount: 200 },
+  ],
+  'Base Sepolia': [
+    { assetSymbol: 'ETH', amount: 0.5 },
+    { assetSymbol: 'USDC', amount: 640 },
+  ],
+};
+
 async function main() {
   const passwordHash = await hashPassword('DemoPass123!');
   const encrypted = encryptSecret(generateRecoveryPhrase(), 'DemoPass123!');
@@ -14,7 +30,7 @@ async function main() {
   ];
 
   for (const user of demoUsers) {
-    await prisma.user.upsert({
+    const upserted = await prisma.user.upsert({
       where: { email: user.email },
       update: {
         username: user.username,
@@ -42,6 +58,27 @@ async function main() {
         },
       },
     });
+
+    // Upsert balances for the user's primary wallet.
+    // update: {} means balances are left unchanged if they already exist,
+    // so re-running the seed will not reset a user's balance mid-session.
+    const wallet = await prisma.wallet.findFirst({ where: { ownerId: upserted.id } });
+    if (wallet) {
+      const seedBalances = STARTING_BALANCES[wallet.network] ?? [];
+      for (const { assetSymbol, amount } of seedBalances) {
+        await prisma.balance.upsert({
+          where: {
+            walletId_assetSymbol_network: {
+              walletId: wallet.id,
+              assetSymbol,
+              network: wallet.network,
+            },
+          },
+          update: {},
+          create: { walletId: wallet.id, assetSymbol, network: wallet.network, amount },
+        });
+      }
+    }
   }
 }
 

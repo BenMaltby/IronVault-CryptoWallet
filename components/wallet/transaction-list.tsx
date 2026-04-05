@@ -20,6 +20,9 @@ export function TransactionList({ transactions }: Props) {
               {tx.recipientAddress ? (
                 <p className="text-sm text-slate-400">To {shortenAddress(tx.recipientAddress)}</p>
               ) : null}
+              {tx.senderAddress ? (
+                <p className="text-sm text-slate-400">From {shortenAddress(tx.senderAddress)}</p>
+              ) : null}
             </div>
             <div className="text-right">
               <p className="font-semibold">{tx.amount} {tx.assetSymbol}</p>

@@ -22,6 +22,11 @@ enum TransactionStatus {
   CANCELLED
 }
 
+enum TransactionDirection {
+  SEND
+  RECEIVE
+}
+
 model User {
   id               String        @id @default(auto()) @map("_id") @db.ObjectId
   username         String        @unique
@@ -51,9 +56,22 @@ model Wallet {
   network                   String
   addresses                 WalletAddress[]
   transactions              Transaction[]
+  balances                  Balance[]
   owner                     User          @relation(fields: [ownerId], references: [id])
   ownerId                   String        @db.ObjectId
   createdAt                 DateTime      @default(now())
+}
+
+model Balance {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  walletId    String   @db.ObjectId
+  assetSymbol String
+  network     String
+  amount      Float    @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([walletId, assetSymbol, network])
 }
 
 model WalletAddress {
@@ -75,6 +93,7 @@ model Transaction {
   senderAddress    String?
   network          String
   status           TransactionStatus
+  direction        TransactionDirection
   txHash           String?
   riskWarning      String?
   wallet           Wallet            @relation(fields: [walletId], references: [id])

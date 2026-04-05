@@ -5,6 +5,7 @@ TestAccount1:
 
  TestAccount1 Wallets:
  - MyFirstWallet password is uB9Q%DHouPLyI6NA3!
+   - 0x04f83f9893e0bb506fc119c3043bd77442996e71
  - AnotherWallet password is uB9Q%DHouPLyI6NA3!
    - orbit amber wallet amber secure future network ledger amber secure ledger orbit
 
@@ -12,3 +13,7 @@ TestAccount1:
 ImExperienced
 cryptouser@gmail.com
 uB9Q%DHouPLyI6NA3!
+ - ExperiencedWallet password is 12345678
+   - vault token seed shield amber network token seed shield seed network cipher
+   - 0xd9bf32130d4e81466640bea7309a6959b4321a50
+
