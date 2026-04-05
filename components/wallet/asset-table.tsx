@@ -27,7 +27,7 @@ export function AssetTable({ assets }: Props) {
               <tr key={`${asset.symbol}-${asset.network}`} className="border-t border-slate-800">
                 <td className="px-4 py-3 font-medium">{asset.symbol} <span className="text-slate-400">{asset.name}</span></td>
                 <td className="px-4 py-3">{asset.network}</td>
-                <td className="px-4 py-3">{asset.balance}</td>
+                <td className="px-4 py-3">{asset.balance.toFixed(2)}</td>
                 <td className="px-4 py-3">{formatCurrency(asset.price)}</td>
                 <td className="px-4 py-3">{formatCurrency(asset.balance * asset.price)}</td>
               </tr>

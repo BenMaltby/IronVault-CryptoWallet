@@ -58,7 +58,7 @@ export function WalletSummary({ wallets, compact = false }: WalletSummaryProps) 
                     <p className="mt-1 text-sm text-slate-400">{wallet.network}</p>
                   </div>
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                    {new Date(wallet.createdAt).toLocaleDateString()}
+                    {new Date(wallet.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 </div>
                 <div className="mt-4 grid gap-2">
@@ -112,7 +112,7 @@ export function WalletSummary({ wallets, compact = false }: WalletSummaryProps) 
                   <p className="mt-1 text-sm text-slate-400">{wallet.network}</p>
                 </div>
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                  {new Date(wallet.createdAt).toLocaleDateString()}
+                  {new Date(wallet.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </p>
               </div>
               <div className="mt-4 grid gap-2">
