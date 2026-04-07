@@ -37,3 +37,8 @@ Polygon Amoy Wallet:
 Base Sepolia Wallet:
  - 0x0afb20bd36d7c633ff0291e7ec99c5e3854b771a
  - wallet network network wallet shield future wallet amber cipher vault amber orbit
+
+ Harveys account:
+  - username: Harveyb
+  - email: Harvey@gmail.com
+  - pass: Benisgay111
