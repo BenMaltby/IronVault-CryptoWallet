@@ -27,6 +27,11 @@ enum TransactionDirection {
   RECEIVE
 }
 
+enum SecretType {
+  RECOVERY_PHRASE
+  IMPORTED_PRIVATE_KEY
+}
+
 model User {
   id               String        @id @default(auto()) @map("_id") @db.ObjectId
   username         String        @unique
@@ -57,6 +62,7 @@ model Wallet {
   network                   String
   addresses                 WalletAddress[]
   transactions              Transaction[]
+  vault                     EncryptedWalletVault?
   balances                  Balance[]
   owner                     User          @relation(fields: [ownerId], references: [id])
   ownerId                   String        @db.ObjectId
@@ -73,6 +79,32 @@ model Balance {
   updatedAt   DateTime @updatedAt
 
   @@unique([walletId, assetSymbol, network])
+}
+
+model EncryptedWalletVault {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  wallet          Wallet           @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  walletId        String           @unique @db.ObjectId
+  vaultVersion    Int              @default(1)
+  keyVersion      String
+  recoverySecrets RecoverySecret[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([createdAt])
+}
+
+model RecoverySecret {
+  id               String               @id @default(auto()) @map("_id") @db.ObjectId
+  vault            EncryptedWalletVault @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  vaultId          String               @db.ObjectId
+  secretType       SecretType
+  label            String?
+  encryptedPayload Json
+  createdAt        DateTime             @default(now())
+
+  @@index([vaultId, secretType])
+  @@index([createdAt])
 }
 
 model WalletAddress {
