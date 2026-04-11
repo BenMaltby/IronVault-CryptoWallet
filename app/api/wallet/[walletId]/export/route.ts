@@ -101,7 +101,7 @@ export async function POST(request: Request, context: RouteContext) {
                 id: wallet.id,
                 name: wallet.name,
                 network: wallet.network,
-                addresses: wallet.addresses.map((address: WalletAddress) => (
+                addresses: wallet.addresses.map((address: WalletAddress) => ({
                     label: address.label,
                     address: address.address,
                     network: address.network,
