@@ -53,7 +53,7 @@ export default async function HomePage() {
       <section className="flex min-h-[calc(100vh-140px)] items-center">
         <div className="max-w-3xl">
           <p className={`text-5xl uppercase tracking-[0.2em] text-emerald-300 md:text-7xl`}>IronVault</p>
-          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">A beginner friendlty crypto wallet.</h1>
+          <h1 className="text-4xl font-bold tracking-tight md:text-6xl">A beginner friendly crypto wallet.</h1>
           <p className="mt-6 text-lg text-slate-300">
             Crypto with confidence. IronVault is a secure and user-friendly crypto wallet designed for beginners. Manage your assets, track transactions, and explore the world of crypto with ease.
           </p>

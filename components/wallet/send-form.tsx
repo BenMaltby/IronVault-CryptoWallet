@@ -348,6 +348,9 @@ export function SendForm({ wallets, contacts }: Props) {
             }}
             required
           />
+          <p className="text-xs text-slate-500">
+           Make sure this address is correct. Transactions cannot be reversed.
+          </p>
         </label>
 
         <label className="grid gap-2">
