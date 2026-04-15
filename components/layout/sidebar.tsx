@@ -11,10 +11,8 @@ import {
   WalletCards,
   BookUser,
   GraduationCap,
-  LifeBuoy,
-  GraduationCap, 
   Search, 
-  TrendingUp 
+  TrendingUp,
   LifeBuoy,
 } from 'lucide-react';
 
