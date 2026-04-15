@@ -1,6 +1,6 @@
 import { TransactionRecord } from '@/types';
-import { formatCurrency, shortenAddress } from '@/lib/utils';
-import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { formatCurrency, formatDurationSince, isTransactionStuck, shortenAddress } from '@/lib/utils';
+import { ArrowUpRight, ArrowDownLeft, AlertTriangle } from 'lucide-react';
 
 type Props = {
   transactions: TransactionRecord[];
@@ -16,6 +16,7 @@ export function TransactionList({ transactions }: Props) {
       <div className="divide-y divide-slate-800">
         {transactions.map((tx) => {
           const isSend = tx.type === 'send';
+          const stuck = isTransactionStuck(tx.status, tx.createdAt);
 
           return (
             <div
@@ -52,6 +53,13 @@ export function TransactionList({ transactions }: Props) {
                       From {shortenAddress(tx.senderAddress)}
                     </p>
                   ) : null}
+
+                  {stuck ? (
+                    <p className="mt-1 flex items-center gap-1 text-xs text-rose-400">
+                      <AlertTriangle size={12} />
+                      Pending for {formatDurationSince(tx.createdAt)} — longer than expected
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
@@ -67,14 +75,16 @@ export function TransactionList({ transactions }: Props) {
 
                 <span
                   className={`mt-1 inline-block rounded-lg px-2 py-1 text-xs font-medium ${
-                    tx.status === 'submitted'
+                    stuck
+                      ? 'bg-rose-500/10 text-rose-400'
+                      : tx.status === 'submitted'
                       ? 'bg-emerald-500/10 text-emerald-400'
                       : tx.status === 'pending'
                       ? 'bg-amber-500/10 text-amber-400'
                       : 'bg-slate-700 text-slate-300'
                   }`}
                 >
-                  {tx.status}
+                  {stuck ? 'stuck' : tx.status}
                 </span>
               </div>
             </div>
