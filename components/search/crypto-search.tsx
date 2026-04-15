@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { Search, TrendingUp, TrendingDown } from 'lucide-react';
 import { cryptoCatalog } from '@/lib/crypto-catalog';
 import type { CryptoCoin } from '@/lib/crypto-catalog';
@@ -46,10 +47,10 @@ export function CryptoSearch() {
   const [query, setQuery] = useState('');
   const [wsStatus, setWsStatus] = useState<WsStatus>('connecting');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Fetch full market data from CoinGecko on mount
   useEffect(() => {
     fetch('/api/crypto')
       .then((r) => r.json())
@@ -65,7 +66,6 @@ export function CryptoSearch() {
       .catch(() => {});
   }, []);
 
-  // Binance WebSocket for real-time price updates
   useEffect(() => {
     function connect() {
       setWsStatus('connecting');
@@ -90,7 +90,9 @@ export function CryptoSearch() {
             ),
           );
           setLastUpdated(new Date());
-        } catch {}
+        } catch {
+          // Ignore malformed frames.
+        }
       };
 
       ws.onerror = () => setWsStatus('offline');
@@ -131,30 +133,46 @@ export function CryptoSearch() {
             className="w-full rounded-xl border border-slate-700 bg-slate-800 py-3 pl-11 pr-4 text-sm text-slate-100 placeholder-slate-500 outline-none transition focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 transition hover:text-white">
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 transition hover:text-white"
+            >
               Clear
             </button>
           )}
         </div>
-        <div className={`flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium ${
-          wsStatus === 'live' ? 'border-emerald-700/40 bg-emerald-500/10 text-emerald-300'
-          : wsStatus === 'connecting' ? 'border-yellow-700/40 bg-yellow-500/10 text-yellow-300'
-          : 'border-red-700/40 bg-red-500/10 text-red-300'
-        }`}>
-          <span className={`h-2 w-2 rounded-full ${
-            wsStatus === 'live' ? 'animate-pulse bg-emerald-400'
-            : wsStatus === 'connecting' ? 'animate-pulse bg-yellow-400'
-            : 'bg-red-400'
-          }`} />
+
+        <div
+          className={`flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium ${
+            wsStatus === 'live'
+              ? 'border-emerald-700/40 bg-emerald-500/10 text-emerald-300'
+              : wsStatus === 'connecting'
+              ? 'border-yellow-700/40 bg-yellow-500/10 text-yellow-300'
+              : 'border-red-700/40 bg-red-500/10 text-red-300'
+          }`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${
+              wsStatus === 'live'
+                ? 'animate-pulse bg-emerald-400'
+                : wsStatus === 'connecting'
+                ? 'animate-pulse bg-yellow-400'
+                : 'bg-red-400'
+            }`}
+          />
           {wsStatus === 'live' ? 'Live' : wsStatus === 'connecting' ? 'Connecting…' : 'Offline — reconnecting'}
         </div>
       </div>
 
       <div className="flex items-center justify-between">
         <p className="text-xs text-slate-500">
-          {query ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${query}"` : `Showing ${filtered.length} cryptocurrencies`}
+          {query
+            ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${query}"`
+            : `Showing ${filtered.length} cryptocurrencies`}
         </p>
-        {lastUpdated && <p className="text-xs text-slate-600">Last tick {lastUpdated.toLocaleTimeString()}</p>}
+        {lastUpdated && (
+          <p className="text-xs text-slate-600">Last tick {lastUpdated.toLocaleTimeString()}</p>
+        )}
       </div>
 
       {filtered.length === 0 ? (
@@ -164,36 +182,60 @@ export function CryptoSearch() {
       ) : (
         <div className="card overflow-hidden">
           <div className="grid grid-cols-[2rem_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-slate-800 px-5 py-3 text-xs font-medium uppercase tracking-wider text-slate-500">
-            <span>#</span><span>Name</span>
+            <span>#</span>
+            <span>Name</span>
             <span className="text-right">Price</span>
             <span className="text-right">24 h</span>
             <span className="hidden text-right md:block">Market Cap</span>
             <span className="hidden text-right lg:block">Volume (24 h)</span>
           </div>
+
           {filtered.map((coin, index) => {
             const isPositive = coin.change24h >= 0;
-            const categoryClass = CATEGORY_COLORS[coin.category] ?? 'border-slate-700/40 bg-slate-500/10 text-slate-300';
+            const categoryClass =
+              CATEGORY_COLORS[coin.category] ??
+              'border-slate-700/40 bg-slate-500/10 text-slate-300';
+
             return (
-              <div key={coin.id} className="grid grid-cols-[2rem_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-slate-800/60 px-5 py-3.5 text-sm transition hover:bg-slate-800/40 last:border-0">
+              <Link
+                key={coin.id}
+                href={`/search/${coin.id}`}
+                className="grid grid-cols-[2rem_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-slate-800/60 px-5 py-3.5 text-sm transition hover:bg-slate-800/40 last:border-0 cursor-pointer"
+              >
                 <span className="text-xs text-slate-500">{index + 1}</span>
+
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-emerald-300">{coin.symbol.slice(0, 2)}</div>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-emerald-300">
+                    {coin.symbol.slice(0, 2)}
+                  </div>
                   <div className="min-w-0">
                     <p className="truncate font-medium text-white">{coin.name}</p>
                     <div className="mt-0.5 flex items-center gap-2">
                       <span className="text-xs text-slate-400">{coin.symbol}</span>
-                      <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${categoryClass}`}>{coin.category}</span>
+                      <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${categoryClass}`}>
+                        {coin.category}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <span className="text-right font-mono font-medium text-white">{formatPrice(coin.price)}</span>
+
+                <span className="text-right font-mono font-medium text-white">
+                  {formatPrice(coin.price)}
+                </span>
+
                 <div className={`flex items-center justify-end gap-1 font-mono text-sm ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                   {isPositive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
                   {isPositive ? '+' : ''}{coin.change24h.toFixed(2)}%
                 </div>
-                <span className="hidden text-right font-mono text-slate-300 md:block">{formatLargeNumber(coin.marketCap)}</span>
-                <span className="hidden text-right font-mono text-slate-400 lg:block">{formatLargeNumber(coin.volume24h)}</span>
-              </div>
+
+                <span className="hidden text-right font-mono text-slate-300 md:block">
+                  {formatLargeNumber(coin.marketCap)}
+                </span>
+
+                <span className="hidden text-right font-mono text-slate-400 lg:block">
+                  {formatLargeNumber(coin.volume24h)}
+                </span>
+              </Link>
             );
           })}
         </div>
