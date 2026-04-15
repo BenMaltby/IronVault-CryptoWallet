@@ -1,11 +1,13 @@
 import { AppShell } from '@/components/layout/app-shell';
 import { WalletSummary } from '@/components/wallet/wallet-summary';
 import { AssetTable } from '@/components/wallet/asset-table';
+import { StuckTransactionAlert } from '@/components/wallet/stuck-transaction-alert';
 import { SummaryCards } from '@/components/wallet/summary-cards';
 import { TransactionList } from '@/components/wallet/transaction-list';
 import { assets } from '@/lib/mock-data';
 import { prisma } from '@/lib/prisma';
 import { requireSession, roleLabels } from '@/lib/session';
+import { STUCK_TRANSACTION_THRESHOLD_MS } from '@/lib/utils';
 import type { AssetBalance, TransactionRecord } from '@/types';
 
 const dashboardCopy = {
@@ -38,7 +40,9 @@ const ASSET_NAMES: Record<string, string> = Object.fromEntries(
 export default async function DashboardPage() {
   const session = await requireSession();
 
-  const [wallets, balanceRows, recentTxRows, pendingCount] = await Promise.all([
+  const stuckCutoff = new Date(Date.now() - STUCK_TRANSACTION_THRESHOLD_MS);
+
+  const [wallets, balanceRows, recentTxRows, pendingCount, stuckCount] = await Promise.all([
     prisma.wallet.findMany({
       where: { ownerId: session.user.id },
       include: { addresses: { orderBy: { createdAt: 'asc' } } },
@@ -54,6 +58,13 @@ export default async function DashboardPage() {
     }),
     prisma.transaction.count({
       where: { wallet: { ownerId: session.user.id }, status: 'PENDING' },
+    }),
+    prisma.transaction.count({
+      where: {
+        wallet: { ownerId: session.user.id },
+        status: 'PENDING',
+        createdAt: { lt: stuckCutoff },
+      },
     }),
   ]);
 
@@ -107,6 +118,7 @@ export default async function DashboardPage() {
         </p>
       </div>
       <WalletSummary wallets={wallets} compact />
+      <StuckTransactionAlert stuckCount={stuckCount} />
       <SummaryCards totalValue={totalValue} totalAssets={assetBalances.length} pendingTransactions={pendingCount} />
       <AssetTable assets={assetBalances} />
       <TransactionList transactions={transactions} />
