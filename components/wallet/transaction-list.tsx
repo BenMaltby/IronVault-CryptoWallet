@@ -18,6 +18,7 @@ export function TransactionList({ transactions }: Props) {
   const [typeFilter, setTypeFilter] = useState<'all' | 'send' | 'receive'>('all');
   const [assetFilter, setAssetFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState<'all' | '24h' | '7d' | '30d'>('all');
 
   const assetOptions = useMemo(
     () => Array.from(new Set(transactions.map((tx) => tx.assetSymbol))),
@@ -34,13 +35,21 @@ export function TransactionList({ transactions }: Props) {
       const stuck = isTransactionStuck(tx.status, tx.createdAt);
       const displayStatus = stuck ? 'stuck' : tx.status;
 
+      const now = Date.now();
+      const createdAtMs = new Date(tx.createdAt).getTime();
+
       const matchesType = typeFilter === 'all' || tx.type === typeFilter;
       const matchesAsset = assetFilter === 'all' || tx.assetSymbol === assetFilter;
       const matchesStatus = statusFilter === 'all' || displayStatus === statusFilter;
+      const matchesDate =
+        dateFilter === 'all' ||
+        (dateFilter === '24h' && now - createdAtMs <= 24 * 60 * 60 * 1000) ||
+        (dateFilter === '7d' && now - createdAtMs <= 7 * 24 * 60 * 60 * 1000) ||
+        (dateFilter === '30d' && now - createdAtMs <= 30 * 24 * 60 * 60 * 1000);
 
-      return matchesType && matchesAsset && matchesStatus;
+      return matchesType && matchesAsset && matchesStatus && matchesDate;
     });
-  }, [transactions, typeFilter, assetFilter, statusFilter]);
+  }, [transactions, typeFilter, assetFilter, statusFilter, dateFilter]);
 
   return (
     <div className="card overflow-hidden">
@@ -49,6 +58,7 @@ export function TransactionList({ transactions }: Props) {
       </div>
 
       <div className="flex flex-wrap gap-3 border-b border-slate-800 p-4">
+        {/* TYPE */}
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value as 'all' | 'send' | 'receive')}
@@ -59,6 +69,7 @@ export function TransactionList({ transactions }: Props) {
           <option value="receive">Receive</option>
         </select>
 
+        {/* ASSET */}
         <select
           value={assetFilter}
           onChange={(e) => setAssetFilter(e.target.value)}
@@ -72,6 +83,7 @@ export function TransactionList({ transactions }: Props) {
           ))}
         </select>
 
+        {/* STATUS */}
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
@@ -83,6 +95,18 @@ export function TransactionList({ transactions }: Props) {
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </option>
           ))}
+        </select>
+
+        {/* DATE FILTER (NEW 🔥) */}
+        <select
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value as 'all' | '24h' | '7d' | '30d')}
+          className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+        >
+          <option value="all">All time</option>
+          <option value="24h">Last 24 hours</option>
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
         </select>
       </div>
 
@@ -103,9 +127,8 @@ export function TransactionList({ transactions }: Props) {
               >
                 <div className="flex items-start gap-3">
                   <div
-                    className={`mt-1 flex h-9 w-9 items-center justify-center rounded-xl ${
-                      isSend ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
-                    }`}
+                    className={`mt-1 flex h-9 w-9 items-center justify-center rounded-xl ${isSend ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
+                      }`}
                   >
                     {isSend ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
                   </div>
@@ -150,15 +173,14 @@ export function TransactionList({ transactions }: Props) {
                   </p>
 
                   <span
-                    className={`mt-1 inline-block rounded-lg px-2 py-1 text-xs font-medium ${
-                      stuck
-                        ? 'bg-rose-500/10 text-rose-400'
-                        : tx.status === 'submitted'
+                    className={`mt-1 inline-block rounded-lg px-2 py-1 text-xs font-medium ${stuck
+                      ? 'bg-rose-500/10 text-rose-400'
+                      : tx.status === 'submitted'
                         ? 'bg-emerald-500/10 text-emerald-400'
                         : tx.status === 'pending'
-                        ? 'bg-amber-500/10 text-amber-400'
-                        : 'bg-slate-700 text-slate-300'
-                    }`}
+                          ? 'bg-amber-500/10 text-amber-400'
+                          : 'bg-slate-700 text-slate-300'
+                      }`}
                   >
                     {stuck ? 'stuck' : tx.status}
                   </span>
