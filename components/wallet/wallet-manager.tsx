@@ -1,8 +1,8 @@
 'use client';
 
-import {FormEvent, useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {WalletSummary, WalletSummaryItem} from '@/components/wallet/wallet-summary';
+import { FormEvent, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { WalletSummary, WalletSummaryItem } from '@/components/wallet/wallet-summary';
 
 type WalletManagerProps = {
     wallets: WalletSummaryItem[];
@@ -98,7 +98,7 @@ function extractErrorMessage(error: unknown, fallback: string) {
     return fallback;
 }
 
-export function WalletManager({wallets}: WalletManagerProps) {
+export function WalletManager({ wallets }: WalletManagerProps) {
     const router = useRouter();
 
     const [activeSection, setActiveSection] = useState<
@@ -145,6 +145,14 @@ export function WalletManager({wallets}: WalletManagerProps) {
     const [importBackupSubmitting, setImportBackupSubmitting] = useState(false);
     const [importBackupError, setImportBackupError] = useState('');
     const [importBackupSuccessMessage, setImportBackupSuccessMessage] = useState('');
+
+    const recoveryWordCount = importFormData.recoveryPhrase
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+
+    const hasValidRecoveryPhraseLength =
+        recoveryWordCount === 12 || recoveryWordCount === 24;
 
     useEffect(() => {
         if (!selectedWalletId && wallets[0]?.id) {
@@ -338,7 +346,7 @@ export function WalletManager({wallets}: WalletManagerProps) {
     function handleDownloadBackup() {
         if (!exportedBackupJson) return;
 
-        const blob = new Blob([exportedBackupJson], {type: 'application/json'});
+        const blob = new Blob([exportedBackupJson], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = url;
@@ -349,17 +357,16 @@ export function WalletManager({wallets}: WalletManagerProps) {
 
     return (
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-            <WalletSummary wallets={wallets}/>
+            <WalletSummary wallets={wallets} />
 
             <div className="card p-6">
                 <div className="flex flex-wrap gap-2">
                     <button
                         type="button"
-                        className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                            activeSection === 'create'
-                                ? 'bg-emerald-500 text-slate-950'
-                                : 'border border-slate-700 bg-slate-950 text-slate-200'
-                        }`}
+                        className={`rounded-xl px-4 py-2 text-sm font-medium ${activeSection === 'create'
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'border border-slate-700 bg-slate-950 text-slate-200'
+                            }`}
                         onClick={() => setActiveSection('create')}
                     >
                         Create wallet
@@ -367,11 +374,10 @@ export function WalletManager({wallets}: WalletManagerProps) {
 
                     <button
                         type="button"
-                        className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                            activeSection === 'import-phrase'
-                                ? 'bg-emerald-500 text-slate-950'
-                                : 'border border-slate-700 bg-slate-950 text-slate-200'
-                        }`}
+                        className={`rounded-xl px-4 py-2 text-sm font-medium ${activeSection === 'import-phrase'
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'border border-slate-700 bg-slate-950 text-slate-200'
+                            }`}
                         onClick={() => setActiveSection('import-phrase')}
                     >
                         Import by phrase
@@ -379,11 +385,10 @@ export function WalletManager({wallets}: WalletManagerProps) {
 
                     <button
                         type="button"
-                        className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                            activeSection === 'export-backup'
-                                ? 'bg-emerald-500 text-slate-950'
-                                : 'border border-slate-700 bg-slate-950 text-slate-200'
-                        }`}
+                        className={`rounded-xl px-4 py-2 text-sm font-medium ${activeSection === 'export-backup'
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'border border-slate-700 bg-slate-950 text-slate-200'
+                            }`}
                         onClick={() => setActiveSection('export-backup')}
                     >
                         Export backup
@@ -391,11 +396,10 @@ export function WalletManager({wallets}: WalletManagerProps) {
 
                     <button
                         type="button"
-                        className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                            activeSection === 'import-backup'
-                                ? 'bg-emerald-500 text-slate-950'
-                                : 'border border-slate-700 bg-slate-950 text-slate-200'
-                        }`}
+                        className={`rounded-xl px-4 py-2 text-sm font-medium ${activeSection === 'import-backup'
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'border border-slate-700 bg-slate-950 text-slate-200'
+                            }`}
                         onClick={() => setActiveSection('import-backup')}
                     >
                         Import backup
@@ -561,6 +565,24 @@ export function WalletManager({wallets}: WalletManagerProps) {
                                     placeholder="Enter the wallet recovery phrase"
                                     required
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <p className="text-xs text-slate-500">
+                                        Enter your 12 or 24-word recovery phrase in the correct order, separated by spaces.
+                                    </p>
+                                    <p className="text-xs text-slate-400">
+                                        {recoveryWordCount} / 12 or 24 words
+                                    </p>
+                                </div>
+
+                                {recoveryWordCount > 0 && !hasValidRecoveryPhraseLength ? (
+                                    <p className="text-xs text-rose-400">
+                                        Recovery phrase must contain 12 or 24 words.
+                                    </p>
+                                ) : null}
+
+                                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300">
+                                    ⚠ Never share your recovery phrase. Anyone with access can fully control your wallet.
+                                </div>
                             </label>
 
                             {importError ? <p className="text-sm text-rose-400">{importError}</p> : null}
@@ -571,7 +593,11 @@ export function WalletManager({wallets}: WalletManagerProps) {
                             <button
                                 type="submit"
                                 className="rounded-xl bg-emerald-500 px-4 py-2 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-70"
-                                disabled={importSubmitting}
+                                disabled={
+                                    importSubmitting ||
+                                    !hasValidRecoveryPhraseLength ||
+                                    importFormData.passphrase.length < 14
+                                }
                             >
                                 {importSubmitting ? 'Importing wallet...' : 'Import wallet'}
                             </button>
@@ -664,11 +690,11 @@ export function WalletManager({wallets}: WalletManagerProps) {
 
                             {exportedBackupJson ? (
                                 <div className="grid gap-3">
-                  <textarea
-                      readOnly
-                      className="min-h-[280px] rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm"
-                      value={exportedBackupJson}
-                  />
+                                    <textarea
+                                        readOnly
+                                        className="min-h-[280px] rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm"
+                                        value={exportedBackupJson}
+                                    />
                                     <div className="flex flex-wrap gap-3">
                                         <button
                                             type="button"
