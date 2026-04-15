@@ -6,8 +6,8 @@ export default async function HomePage() {
   const session = await getSession();
 
   return (
-    <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
-      <nav className="flex items-center justify-between border-b border-slate-800 pb-6">
+    <main className="min-h-screen w-full max-w-7xl px-6 py-8">
+      <nav className="flex items-center justify-between border-b border-slate-800 pb-8">
         <div>
           {session ? (
             <Link
