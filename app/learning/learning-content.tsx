@@ -1,4 +1,37 @@
+import type { LucideIcon } from 'lucide-react';
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  BookUser,
+  ChevronDown,
+  CircleHelp,
+  History,
+  Wallet,
+  WalletCards,
+} from 'lucide-react';
 import type { LearningSection } from '@/lib/learning-guide';
+
+/** Same icons as the sidebar for each walkthrough section. */
+const sectionIcons: Record<string, LucideIcon> = {
+  dashboard: Wallet,
+  wallets: WalletCards,
+  send: ArrowUpRight,
+  receive: ArrowDownLeft,
+  history: History,
+  contacts: BookUser,
+};
+
+function LearningSectionSummaryTitle({ sectionId, title }: { sectionId: string; title: string }) {
+  const Icon = sectionIcons[sectionId] ?? CircleHelp;
+  return (
+    <span className="flex min-w-0 flex-1 items-center gap-3">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-300">
+        <Icon className="h-5 w-5" aria-hidden />
+      </span>
+      <h2 className="min-w-0 text-xl font-semibold text-white">{title}</h2>
+    </span>
+  );
+}
 
 function StepText({ children }: { children: string }) {
   const parts = children.split(/\*\*(.+?)\*\*/g);
@@ -30,18 +63,28 @@ export function BeginnerLearningWalkthrough({ sections }: { sections: LearningSe
         </div>
       </div>
 
-      <ol className="space-y-6">
+      <ol className="space-y-4">
         {sections.map((section) => (
-          <li key={section.id} className="card list-none p-6">
-            <h2 className="text-xl font-semibold text-white">{section.title}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-slate-300">{section.summary}</p>
-            <ul className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-slate-300">
-              {section.steps.map((step, stepIndex) => (
-                <li key={`${section.id}-${stepIndex}`}>
-                  <StepText>{step}</StepText>
-                </li>
-              ))}
-            </ul>
+          <li key={section.id} className="list-none">
+            <details className="group card overflow-hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 marker:hidden [&::-webkit-details-marker]:hidden">
+                <LearningSectionSummaryTitle sectionId={section.id} title={section.title} />
+                <ChevronDown
+                  className="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden
+                />
+              </summary>
+              <div className="border-t border-slate-800 px-6 pb-6 pt-4">
+                <p className="text-sm leading-relaxed text-slate-300">{section.summary}</p>
+                <ul className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-slate-300">
+                  {section.steps.map((step, stepIndex) => (
+                    <li key={`${section.id}-${stepIndex}`}>
+                      <StepText>{step}</StepText>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
           </li>
         ))}
       </ol>
