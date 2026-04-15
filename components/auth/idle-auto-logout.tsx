@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const IDLE_MS = 5 * 60 * 1000;
-/** Show countdown after this much idle time (10s while verifying behavior; raise for production UX). */
-const WARNING_AFTER_IDLE_MS = 10 * 1000;
+/** Show countdown after this much idle time (warning phase ends at {@link IDLE_MS}). */
+const WARNING_AFTER_IDLE_MS = 3 * 60 * 1000;
 const TICK_MS = 1_000;
 
 /**
