@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { MockHelpChatbot } from '@/components/help/mock-help-chatbot';
 
 export const metadata: Metadata = {
   title: 'IronVault',
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <MockHelpChatbot />
+      </body>
     </html>
   );
 }
