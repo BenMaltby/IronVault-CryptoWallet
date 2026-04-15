@@ -19,6 +19,12 @@ export function TransactionList({ transactions }: Props) {
   const [assetFilter, setAssetFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState<'all' | '24h' | '7d' | '30d'>('all');
+  function clearFilters() {
+    setTypeFilter('all');
+    setAssetFilter('all');
+    setStatusFilter('all');
+    setDateFilter('all');
+  }
 
   const assetOptions = useMemo(
     () => Array.from(new Set(transactions.map((tx) => tx.assetSymbol))),
@@ -57,7 +63,7 @@ export function TransactionList({ transactions }: Props) {
         <h3 className="text-lg font-semibold">Recent transactions</h3>
       </div>
 
-      <div className="flex flex-wrap gap-3 border-b border-slate-800 p-4">
+      <div className="flex flex-wrap items-center gap-3 border-b border-slate-800 p-4">
         {/* TYPE */}
         <select
           value={typeFilter}
@@ -97,7 +103,7 @@ export function TransactionList({ transactions }: Props) {
           ))}
         </select>
 
-        {/* DATE FILTER (NEW 🔥) */}
+        {/* DATE FILTER */}
         <select
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value as 'all' | '24h' | '7d' | '30d')}
@@ -108,6 +114,18 @@ export function TransactionList({ transactions }: Props) {
           <option value="7d">Last 7 days</option>
           <option value="30d">Last 30 days</option>
         </select>
+
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300"
+        >
+          Clear filters
+        </button>
+      </div>
+
+      <div className="border-b border-slate-800 px-4 py-2 text-sm text-slate-400">
+        Showing {filteredTransactions.length} of {transactions.length} transactions
       </div>
 
       {filteredTransactions.length === 0 ? (
