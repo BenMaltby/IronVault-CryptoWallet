@@ -16,9 +16,9 @@ export function AssetTable({ assets }: Props) {
           <thead className="bg-slate-900/60 text-slate-400">
             <tr>
               <th className="px-4 py-3">Asset</th>
-              <th className="px-4 py-3">Network</th>
+              <th className="hidden px-4 py-3 sm:table-cell">Network</th>
               <th className="px-4 py-3">Balance</th>
-              <th className="px-4 py-3">Price</th>
+              <th className="hidden px-4 py-3 sm:table-cell">Price</th>
               <th className="px-4 py-3">Value</th>
             </tr>
           </thead>
@@ -26,9 +26,9 @@ export function AssetTable({ assets }: Props) {
             {assets.map((asset) => (
               <tr key={`${asset.symbol}-${asset.network}`} className="border-t border-slate-800">
                 <td className="px-4 py-3 font-medium">{asset.symbol} <span className="text-slate-400">{asset.name}</span></td>
-                <td className="px-4 py-3">{asset.network}</td>
+                <td className="hidden px-4 py-3 sm:table-cell">{asset.network}</td>
                 <td className="px-4 py-3">{asset.balance.toFixed(2)}</td>
-                <td className="px-4 py-3">{formatCurrency(asset.price)}</td>
+                <td className="hidden px-4 py-3 sm:table-cell">{formatCurrency(asset.price)}</td>
                 <td className="px-4 py-3">{formatCurrency(asset.balance * asset.price)}</td>
               </tr>
             ))}

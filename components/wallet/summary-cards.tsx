@@ -14,7 +14,7 @@ export function SummaryCards({ totalValue, totalAssets, pendingTransactions }: P
       value: formatCurrency(totalValue),
       icon: Wallet,
       color: 'text-emerald-400',
-      colSpan: 'md:col-span-2',
+      colSpan: 'col-span-2 md:col-span-2',
     },
     {
       label: 'Tracked assets',
@@ -33,7 +33,7 @@ export function SummaryCards({ totalValue, totalAssets, pendingTransactions }: P
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
       {cards.map((card) => {
         const Icon = card.icon;
 

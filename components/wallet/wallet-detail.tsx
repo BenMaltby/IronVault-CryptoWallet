@@ -287,21 +287,14 @@ export function WalletDetail({ wallet }: Props) {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full table-fixed text-sm">
-              <colgroup>
-                <col className="w-[40%]" />
-                <col className="w-[15%]" />
-                <col className="w-[18%]" />
-                <col className="w-[15%]" />
-                <col className="w-[12%]" />
-              </colgroup>
+            <table className="w-full text-sm">
               <thead className="bg-slate-900/60 text-xs uppercase tracking-wider text-slate-500">
                 <tr>
                   <th className="px-4 py-3 text-left">Asset</th>
-                  <th className="px-4 py-3 text-right">Price</th>
+                  <th className="hidden px-4 py-3 text-right sm:table-cell">Price</th>
                   <th className="px-4 py-3 text-right">Balance</th>
                   <th className="px-4 py-3 text-right">Value</th>
-                  <th className="px-4 py-3 text-right">24h</th>
+                  <th className="hidden px-4 py-3 text-right sm:table-cell">24h</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -325,7 +318,7 @@ export function WalletDetail({ wallet }: Props) {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono">{formatPrice(price)}</td>
+                      <td className="hidden px-4 py-3 text-right font-mono sm:table-cell">{formatPrice(price)}</td>
                       <td className="px-4 py-3 text-right font-mono">
                         {b.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })}
                       </td>
@@ -333,7 +326,7 @@ export function WalletDetail({ wallet }: Props) {
                         {formatCurrency(value)}
                       </td>
                       <td
-                        className={`px-4 py-3 text-right font-mono text-sm ${
+                        className={`hidden px-4 py-3 text-right font-mono text-sm sm:table-cell ${
                           isPositive ? 'text-emerald-400' : 'text-red-400'
                         }`}
                       >
@@ -345,13 +338,16 @@ export function WalletDetail({ wallet }: Props) {
               </tbody>
               <tfoot className="border-t border-slate-700 bg-slate-900/40">
                 <tr>
-                  <td colSpan={3} className="px-4 py-3 text-sm font-medium text-slate-400">
+                  <td colSpan={2} className="px-4 py-3 text-sm font-medium text-slate-400 sm:hidden">
+                    Total
+                  </td>
+                  <td colSpan={3} className="hidden px-4 py-3 text-sm font-medium text-slate-400 sm:table-cell">
                     Total
                   </td>
                   <td className="px-4 py-3 text-right font-mono font-semibold">
                     {formatCurrency(totalValue)}
                   </td>
-                  <td />
+                  <td className="hidden sm:table-cell" />
                 </tr>
               </tfoot>
             </table>
@@ -403,7 +399,7 @@ export function WalletDetail({ wallet }: Props) {
         {/* Filter bar */}
         {wallet.transactions.length > 0 && (
           <div className="border-b border-slate-800 bg-slate-900/40 p-4">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
 
               {/* Asset search */}
               <div className="relative">

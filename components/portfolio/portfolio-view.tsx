@@ -307,7 +307,7 @@ export function PortfolioView({ assets, totalWallets }: Props) {
               </div>
             )}
           </div>
-          <div className="flex gap-6 sm:text-right">
+          <div className="flex gap-4 sm:gap-6 sm:text-right">
             <div>
               <p className="text-xs uppercase tracking-wider text-slate-500">Wallets</p>
               <p className="mt-1 text-2xl font-bold">{totalWallets}</p>
@@ -322,14 +322,14 @@ export function PortfolioView({ assets, totalWallets }: Props) {
 
       {/* Portfolio value chart */}
       <div className="card overflow-hidden">
-        <div className="flex items-center justify-between border-b border-slate-800 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 p-4">
           <h2 className="text-lg font-semibold">Portfolio value</h2>
           <div className="flex items-center gap-1 rounded-xl border border-slate-800 p-1">
             {PERIODS.map((p) => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
-                className={`rounded-lg px-3 py-1 text-xs font-medium transition ${
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition sm:px-3 ${
                   period === p
                     ? 'bg-emerald-500 text-slate-950'
                     : 'text-slate-400 hover:text-white'
@@ -347,7 +347,7 @@ export function PortfolioView({ assets, totalWallets }: Props) {
               No assets held. Add funds to your wallets to see portfolio history.
             </div>
           ) : (
-            <div style={{ height: 280 }}>
+            <div className="h-[200px] sm:h-[280px]">
               <Line data={lineChartData} options={lineOptions} />
             </div>
           )}
@@ -368,8 +368,8 @@ export function PortfolioView({ assets, totalWallets }: Props) {
           <div className="flex flex-col gap-0 md:flex-row">
 
             {/* Doughnut */}
-            <div className="flex items-center justify-center p-8 md:border-r md:border-slate-800">
-              <div style={{ width: 220, height: 220 }}>
+            <div className="flex items-center justify-center p-6 md:border-r md:border-slate-800 md:p-8">
+              <div style={{ width: 180, height: 180 }} className="sm:w-[220px] sm:h-[220px]">
                 <Doughnut data={doughnutChartData} options={doughnutOptions} />
               </div>
             </div>
@@ -377,7 +377,7 @@ export function PortfolioView({ assets, totalWallets }: Props) {
             {/* Breakdown list */}
             <div className="flex-1 divide-y divide-slate-800">
               {pieData.map((d) => (
-                <div key={d.symbol} className="flex items-center justify-between gap-4 px-5 py-3 text-sm">
+                <div key={d.symbol} className="flex items-center justify-between gap-3 px-4 py-3 text-sm sm:px-5">
                   <div className="flex items-center gap-3">
                     <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: d.color }} />
                     <div>
@@ -388,8 +388,8 @@ export function PortfolioView({ assets, totalWallets }: Props) {
                   <div className="text-right">
                     <p className="font-mono font-medium text-white">{formatCurrency(d.value)}</p>
                     <p className="text-xs text-slate-400">
-                      {d.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })} {d.symbol}
-                      <span className="ml-2 text-slate-500">{d.pct.toFixed(1)}%</span>
+                      <span className="hidden sm:inline">{d.amount.toLocaleString('en-US', { maximumFractionDigits: 6 })} {d.symbol} · </span>
+                      <span className="text-slate-500">{d.pct.toFixed(1)}%</span>
                     </p>
                   </div>
                 </div>

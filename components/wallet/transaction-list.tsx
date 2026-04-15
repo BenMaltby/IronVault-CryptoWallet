@@ -63,65 +63,67 @@ export function TransactionList({ transactions }: Props) {
         <h3 className="text-lg font-semibold">Recent transactions</h3>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-800 p-4">
-        {/* TYPE */}
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as 'all' | 'send' | 'receive')}
-          className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All types</option>
-          <option value="send">Send</option>
-          <option value="receive">Receive</option>
-        </select>
+      <div className="border-b border-slate-800 p-4">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+          {/* TYPE */}
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as 'all' | 'send' | 'receive')}
+            className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All types</option>
+            <option value="send">Send</option>
+            <option value="receive">Receive</option>
+          </select>
 
-        {/* ASSET */}
-        <select
-          value={assetFilter}
-          onChange={(e) => setAssetFilter(e.target.value)}
-          className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All assets</option>
-          {assetOptions.map((asset) => (
-            <option key={asset} value={asset}>
-              {asset}
-            </option>
-          ))}
-        </select>
+          {/* ASSET */}
+          <select
+            value={assetFilter}
+            onChange={(e) => setAssetFilter(e.target.value)}
+            className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All assets</option>
+            {assetOptions.map((asset) => (
+              <option key={asset} value={asset}>
+                {asset}
+              </option>
+            ))}
+          </select>
 
-        {/* STATUS */}
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All statuses</option>
-          {statusOptions.map((status) => (
-            <option key={status} value={status}>
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </option>
-          ))}
-        </select>
+          {/* STATUS */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All statuses</option>
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </option>
+            ))}
+          </select>
 
-        {/* DATE FILTER */}
-        <select
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value as 'all' | '24h' | '7d' | '30d')}
-          className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All time</option>
-          <option value="24h">Last 24 hours</option>
-          <option value="7d">Last 7 days</option>
-          <option value="30d">Last 30 days</option>
-        </select>
+          {/* DATE FILTER */}
+          <select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value as 'all' | '24h' | '7d' | '30d')}
+            className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All time</option>
+            <option value="24h">Last 24 hours</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+          </select>
 
-        <button
-          type="button"
-          onClick={clearFilters}
-          className="rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300"
-        >
-          Clear filters
-        </button>
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="col-span-2 rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 sm:col-span-1"
+          >
+            Clear filters
+          </button>
+        </div>
       </div>
 
       <div className="border-b border-slate-800 px-4 py-2 text-sm text-slate-400">
