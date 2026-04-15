@@ -36,7 +36,7 @@ function renderInlineBold(text: string) {
 
 export function MockHelpChatbot() {
   const panelId = useId();
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([introMessage]);
   const [thinking, setThinking] = useState(false);
