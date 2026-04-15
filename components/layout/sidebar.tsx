@@ -10,9 +10,12 @@ import {
   House,
   WalletCards,
   BookUser,
+  GraduationCap,
+  LifeBuoy,
   GraduationCap, 
   Search, 
   TrendingUp 
+  LifeBuoy,
 } from 'lucide-react';
 
 import { LogoutButton } from '@/components/auth/logout-button';
@@ -29,6 +32,8 @@ const baseItems = [
   { href: '/contacts', label: 'Contacts', icon: BookUser },
   { href: '/search', label: 'Search', icon: Search },
   { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/support', label: 'Support', icon: LifeBuoy },
+  // `satisfies` keeps the literal route strings while still enforcing typed-route safety.
 ] satisfies Array<{ href: Route; label: string; icon: typeof Wallet }>;
 
 const privilegedItems = [{ href: '/admin', label: 'Admin', icon: Shield }] satisfies Array<{
