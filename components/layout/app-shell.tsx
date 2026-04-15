@@ -6,7 +6,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <IdleAutoLogout />
-      <main className="grid min-h-screen w-full max-w-7xl gap-6 px-6 py-8 lg:grid-cols-[256px_1fr]">
+      <main className="grid min-h-screen w-full max-w-7xl mx-auto gap-6 px-6 py-8 lg:grid-cols-[256px_1fr]">
         <div className="self-start lg:sticky lg:top-8 lg:shrink-0">
           <Sidebar />
         </div>
