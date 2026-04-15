@@ -1,8 +1,22 @@
 import { AppShell } from '@/components/layout/app-shell';
+import { SettingsPanel } from '@/components/settings/settings-panel';
+import { prisma } from '@/lib/prisma';
 import { requireSession, roleLabels } from '@/lib/session';
 
 export default async function SettingsPage() {
   const session = await requireSession();
+
+  const [user, wallets] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { emailNotifications: true },
+    }),
+    prisma.wallet.findMany({
+      where: { ownerId: session.user.id },
+      select: { id: true, name: true, network: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ]);
 
   return (
     <AppShell>
@@ -13,14 +27,11 @@ export default async function SettingsPage() {
           Signed in as {session.user.username} ({roleLabels[session.user.role]}).
         </p>
       </div>
-      <div className="card p-6">
-        <ul className="space-y-3 text-slate-300">
-          <li>• Auto-lock after inactivity</li>
-          <li>• Export encrypted backup</li>
-          <li>• Enable email notifications</li>
-          <li>• Update password / passphrase</li>
-        </ul>
-      </div>
+      <SettingsPanel
+        username={session.user.username}
+        emailNotifications={user?.emailNotifications ?? false}
+        wallets={wallets}
+      />
     </AppShell>
   );
 }
