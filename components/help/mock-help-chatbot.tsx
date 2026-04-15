@@ -73,58 +73,78 @@ export function MockHelpChatbot() {
   }, [input, thinking]);
 
   return (
-    <aside
-      id={panelId}
-      style={{ transitionTimingFunction: PANEL_EASE }}
-      className={cn(
-        'relative sticky top-0 flex h-screen shrink-0 self-start flex-col overflow-hidden border-l-2 border-l-violet-500/50 border-slate-800 bg-gradient-to-b from-violet-950/35 to-slate-900 md:from-violet-950/30 md:via-slate-900 md:to-slate-900',
-        'transition-[width] duration-300 motion-reduce:transition-none',
-        expanded ? 'w-[min(22rem,calc(100vw-9rem))] md:w-96' : 'w-12',
-      )}
-      aria-label={
-        expanded
-          ? 'IronVault AI chat (prototype, not a live model)'
-          : 'IronVault AI (prototype, collapsed)'
-      }
-    >
-      {/* Narrow rail — fades out when expanded */}
-      <div
-        className={cn(
-          'absolute inset-y-0 left-0 z-10 flex w-12 flex-col bg-gradient-to-b from-violet-950/35 to-slate-900 transition-opacity duration-200 motion-reduce:transition-none',
-          expanded ? 'pointer-events-none opacity-0' : 'opacity-100',
-        )}
-        aria-hidden={expanded}
+    <>
+      {/*
+       * The <aside> is ALWAYS w-12 as a flex sibling in the body layout.
+       * This reserves 48px on the right so the collapsed button never
+       * overlays page content. It does NOT grow when the panel expands.
+       */}
+      <aside
+        id={panelId}
+        className="sticky top-0 h-screen w-12 shrink-0 self-start border-l border-slate-800 bg-gradient-to-b from-violet-950/35 to-slate-900"
+        aria-label={
+          expanded
+            ? 'IronVault AI chat (prototype, not a live model)'
+            : 'IronVault AI (prototype, collapsed)'
+        }
       >
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          tabIndex={expanded ? -1 : 0}
-          className="flex flex-1 flex-col items-center gap-2 border-b border-slate-800 py-3 text-slate-400 transition hover:bg-violet-950/40 hover:text-violet-200"
-          aria-expanded={expanded}
-          aria-controls={panelId}
-          title="Open IronVault AI (prototype)"
+        {/* Narrow rail button — visible only when collapsed */}
+        <div
+          className={cn(
+            'flex h-full flex-col transition-opacity duration-200 motion-reduce:transition-none',
+            expanded ? 'pointer-events-none opacity-0' : 'opacity-100',
+          )}
+          aria-hidden={expanded}
         >
-          <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/20 text-violet-200">
-            <Bot className="h-4 w-4" aria-hidden />
-            <Sparkles className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 text-amber-300/90" aria-hidden />
-          </span>
-          <span
-            className="select-none text-[10px] font-bold uppercase tracking-[0.12em] text-violet-300/90 [writing-mode:vertical-rl] rotate-180"
-            aria-hidden
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            tabIndex={expanded ? -1 : 0}
+            className="flex flex-1 flex-col items-center gap-2 border-b border-slate-800 py-3 text-slate-400 transition hover:bg-violet-950/40 hover:text-violet-200"
+            aria-expanded={expanded}
+            aria-controls={panelId}
+            title="Open IronVault AI (prototype)"
           >
-            AI
-          </span>
-          <ChevronLeft className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
-        </button>
-      </div>
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/20 text-violet-200">
+              <Bot className="h-4 w-4" aria-hidden />
+              <Sparkles className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 text-amber-300/90" aria-hidden />
+            </span>
+            <span
+              className="rotate-180 select-none text-[10px] font-bold uppercase tracking-[0.12em] text-violet-300/90 [writing-mode:vertical-rl]"
+              aria-hidden
+            >
+              AI
+            </span>
+            <ChevronLeft className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
+          </button>
+        </div>
+      </aside>
 
-      {/* Full panel — clipped while width animates; fades when collapsed */}
+      {/*
+       * Dim backdrop — sits behind the expanded panel, above page content.
+       * Clicking it closes the panel.
+       */}
       <div
         className={cn(
-          'flex h-full min-h-0 w-[min(22rem,calc(100vw-9rem))] flex-col md:w-96',
-          'transition-opacity duration-200 ease-out motion-reduce:transition-none',
+          'fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 motion-reduce:transition-none',
           expanded ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
+        aria-hidden
+        onClick={() => setExpanded(false)}
+      />
+
+      {/*
+       * Expanded panel — fixed to the right edge of the viewport, slides in
+       * with translate-x so the page content is never pushed or squashed.
+       */}
+      <div
+        style={{ transitionTimingFunction: PANEL_EASE }}
+        className={cn(
+          'fixed right-0 top-0 z-50 flex h-screen w-[min(22rem,calc(100vw-3rem))] flex-col border-l-2 border-l-violet-500/50 border-slate-800 bg-gradient-to-b from-violet-950/35 to-slate-900 md:w-96',
+          'transition-transform duration-300 motion-reduce:transition-none',
+          expanded ? 'translate-x-0' : 'translate-x-full',
+        )}
+        aria-hidden={!expanded}
       >
         <header className="flex shrink-0 flex-col gap-2 border-b border-slate-800 px-3 py-3">
           <div className="flex items-center justify-between gap-2">
@@ -225,6 +245,6 @@ export function MockHelpChatbot() {
           </p>
         </footer>
       </div>
-    </aside>
+    </>
   );
 }
