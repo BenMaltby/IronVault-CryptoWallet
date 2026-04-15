@@ -14,7 +14,7 @@ export interface WalletOption {
   name: string;
   network: SupportedNetwork;
   address: string;
-  balances: Partial<Record<'ETH' | 'MATIC' | 'USDC', number>>;
+  balances: Record<string, number>;
 }
 
 export interface BlockchainNetwork {
@@ -57,7 +57,7 @@ export interface AssetBalance {
 
 export interface TransactionRecord {
   id: string;
-  type: 'send' | 'receive';
+  type: 'send' | 'receive' | 'buy';
   assetSymbol: string;
   amount: number;
   recipientAddress?: string;

@@ -1,13 +1,10 @@
 import { AppShell } from '@/components/layout/app-shell';
 import { WalletSummary } from '@/components/wallet/wallet-summary';
-import { AssetTable } from '@/components/wallet/asset-table';
-import { PortfolioChart } from '@/components/wallet/portfolio-chart';
-import { SummaryCards } from '@/components/wallet/summary-cards';
+import { LivePortfolio } from '@/components/wallet/live-portfolio';
 import { TransactionList } from '@/components/wallet/transaction-list';
-import { assets } from '@/lib/mock-data';
 import { prisma } from '@/lib/prisma';
 import { requireSession, roleLabels } from '@/lib/session';
-import type { AssetBalance, TransactionRecord } from '@/types';
+import type { TransactionRecord } from '@/types';
 
 const dashboardCopy = {
   ADMIN: {
@@ -28,14 +25,6 @@ const dashboardCopy = {
   },
 } as const;
 
-// Static mock prices — no live price feed in prototype.
-const ASSET_PRICES: Record<string, number> = Object.fromEntries(
-  assets.map((a) => [a.symbol, a.currentPrice]),
-);
-const ASSET_NAMES: Record<string, string> = Object.fromEntries(
-  assets.map((a) => [a.symbol, a.name]),
-);
-
 export default async function DashboardPage() {
   const session = await requireSession();
 
@@ -46,7 +35,7 @@ export default async function DashboardPage() {
       orderBy: { createdAt: 'asc' },
     }),
     prisma.balance.findMany({
-      where: { wallet: { ownerId: session.user.id } },
+      where: { wallet: { ownerId: session.user.id }, amount: { gt: 0 } },
     }),
     prisma.transaction.findMany({
       where: { wallet: { ownerId: session.user.id } },
@@ -70,30 +59,24 @@ export default async function DashboardPage() {
     }
   }
 
-  const assetBalances: AssetBalance[] = Array.from(aggregated.values()).map((row, i) => ({
-    assetId: `${row.symbol}-${row.network}-${i}`,
-    symbol: row.symbol,
-    name: ASSET_NAMES[row.symbol] ?? row.symbol,
-    balance: row.balance,
-    price: ASSET_PRICES[row.symbol] ?? 0,
-    network: row.network as AssetBalance['network'],
-  }));
+  const rawBalances = Array.from(aggregated.values());
 
-  const totalValue = assetBalances.reduce((sum, a) => sum + a.balance * a.price, 0);
-
-  const transactions: TransactionRecord[] = recentTxRows.map((tx) => ({
-    id: tx.id,
-    type: tx.direction === 'SEND' ? 'send' : 'receive',
-    assetSymbol: tx.assetSymbol,
-    amount: tx.amount,
-    recipientAddress: tx.recipientAddress ?? undefined,
-    senderAddress: tx.senderAddress ?? undefined,
-    network: tx.network as TransactionRecord['network'],
-    status: tx.status.toLowerCase() as TransactionRecord['status'],
-    estimatedFee: tx.estimatedFee,
-    createdAt: tx.createdAt.toISOString(),
-    riskWarning: tx.riskWarning ?? undefined,
-  }));
+  const transactions: TransactionRecord[] = recentTxRows.map((tx) => {
+    const isBuy = tx.riskWarning?.startsWith('BUY:') ?? false;
+    return {
+      id: tx.id,
+      type: isBuy ? 'buy' : tx.direction === 'SEND' ? 'send' : 'receive',
+      assetSymbol: tx.assetSymbol,
+      amount: tx.amount,
+      recipientAddress: tx.recipientAddress ?? undefined,
+      senderAddress: tx.senderAddress ?? undefined,
+      network: tx.network as TransactionRecord['network'],
+      status: tx.status.toLowerCase() as TransactionRecord['status'],
+      estimatedFee: tx.estimatedFee,
+      createdAt: tx.createdAt.toISOString(),
+      riskWarning: isBuy ? tx.riskWarning!.slice(4) : tx.riskWarning ?? undefined,
+    };
+  });
 
   const currentRoleCopy = dashboardCopy[session.user.role];
 
@@ -108,9 +91,11 @@ export default async function DashboardPage() {
         </p>
       </div>
       <WalletSummary wallets={wallets} compact />
-      <SummaryCards totalValue={totalValue} totalAssets={assetBalances.length} pendingTransactions={pendingCount} />
-      <PortfolioChart assets={assetBalances} totalValue={totalValue} />
-      <AssetTable assets={assetBalances} />
+      <LivePortfolio
+        rawBalances={rawBalances}
+        totalAssets={rawBalances.length}
+        pendingTransactions={pendingCount}
+      />
       <TransactionList transactions={transactions} />
     </AppShell>
   );
