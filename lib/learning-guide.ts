@@ -45,6 +45,23 @@ export const beginnerSections: LearningSection[] = [
       'When you are done here, use **Send** or **Receive** from the sidebar to use an address, or return to **Dashboard** for the big picture.',
     ],
   },
+  {
+    id: 'send',
+    navLabel: 'Send',
+    title: 'Send',
+    summary:
+      'Send crypto walks you through choosing which wallet sends funds, who receives them, and how much — in three stages: fill in details, confirm, then see the result. Stay on test networks for this prototype.',
+    steps: [
+      'In the **left sidebar**, click **Send** (outgoing arrow icon). The page is titled **Send crypto** and explains that you will select a wallet, enter a recipient, pick an asset and amount, then review before anything is submitted.',
+      'If you have **no wallet with an address yet**, you will see a short message and a **Create a wallet** button — go to **Wallets** first and come back.',
+      'At the top of the form, a small progress row shows **Details → Confirm → Done**. You always start on **Details**.',
+      'On **Details**: choose **From wallet** (name and network per wallet). Optionally use **Select from contacts** to paste a saved address, or type the **Recipient address** yourself. The hint reminds you that wrong addresses cannot be reversed — double-check every character.',
+      'Set **Network** and **Asset** (ETH, MATIC, or USDC) to match what you intend to send. Enter **Amount** manually or use the quick chips (**0.1**, **0.5**, **1.0**) or **Max** (Max reserves estimated fees where applicable). Your **Available** balance for that asset appears next to the amount field.',
+      'Click **Review transaction**. If the server accepts the draft, you move to **Confirm**.',
+      'On **Confirm**, read **From**, **To**, **Network**, **Amount**, **Estimated fee**, and **Total cost**. If there are **warnings**, read them and tick **I have double-checked the recipient address** when you are sure. Use **Back** to edit, or **Confirm & Send** to finish.',
+      'On **Done**, you will see **Transaction submitted** with a **transaction hash** and status. Use **Send another** to start over, or **View history** to open **History** in the app. You can also open **Manage address book** from the bottom of the details form to edit **Contacts**.',
+    ],
+  },
 ];
 
 export function showBeginnerLearning(role: UserRole): boolean {
