@@ -181,7 +181,7 @@ export function CryptoSearch() {
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <div className="grid grid-cols-[2rem_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-slate-800 px-5 py-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+          <div className="grid grid-cols-[2rem_1fr_9rem_6rem_8rem_8rem] items-center gap-4 border-b border-slate-800 px-5 py-3 text-xs font-medium uppercase tracking-wider text-slate-500">
             <span>#</span>
             <span>Name</span>
             <span className="text-right">Price</span>
@@ -200,7 +200,7 @@ export function CryptoSearch() {
               <Link
                 key={coin.id}
                 href={`/search/${coin.id}`}
-                className="grid grid-cols-[2rem_1fr_auto_auto_auto_auto] items-center gap-4 border-b border-slate-800/60 px-5 py-3.5 text-sm transition hover:bg-slate-800/40 last:border-0 cursor-pointer"
+                className="grid grid-cols-[2rem_1fr_9rem_6rem_8rem_8rem] items-center gap-4 border-b border-slate-800/60 px-5 py-3.5 text-sm transition hover:bg-slate-800/40 last:border-0 cursor-pointer"
               >
                 <span className="text-xs text-slate-500">{index + 1}</span>
 

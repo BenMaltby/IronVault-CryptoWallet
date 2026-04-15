@@ -35,11 +35,10 @@ export default async function CoinPage({ params }: { params: Promise<{ id: strin
       name: w.name,
       network: w.network as WalletOption['network'],
       address: w.addresses[0].address,
-      balances: {
-        ETH: w.balances.find((b) => b.assetSymbol === 'ETH' && b.network === w.network)?.amount ?? 0,
-        MATIC: w.balances.find((b) => b.assetSymbol === 'MATIC' && b.network === w.network)?.amount ?? 0,
-        USDC: w.balances.find((b) => b.assetSymbol === 'USDC' && b.network === w.network)?.amount ?? 0,
-      },
+      balances: w.balances.reduce<Record<string, number>>((acc, b) => {
+        acc[b.assetSymbol] = (acc[b.assetSymbol] ?? 0) + b.amount;
+        return acc;
+      }, {}),
     }));
 
   const contacts: Contact[] = contactRows.map((c) => ({
