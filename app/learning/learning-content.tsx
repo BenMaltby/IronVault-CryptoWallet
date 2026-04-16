@@ -9,6 +9,9 @@ import {
   ChevronDown,
   CircleHelp,
   History,
+  LifeBuoy,
+  Search,
+  TrendingUp,
   Wallet,
   WalletCards,
 } from 'lucide-react';
@@ -24,6 +27,9 @@ const sectionIcons: Record<string, LucideIcon> = {
   receive: ArrowDownLeft,
   history: History,
   contacts: BookUser,
+  portfolio: TrendingUp,
+  search: Search,
+  support: LifeBuoy,
 };
 
 type ProgressMap = Record<string, boolean[]>;
