@@ -11,7 +11,7 @@ export type LearningSection = {
   steps: string[];
 };
 
-/** Walkthrough order: core wallet flow first, then Portfolio, Search, and Support (sidebar icons match). Excludes Learning & Admin. */
+/** Same order as the main sidebar (excluding Learning, Settings, and Admin). */
 export const beginnerSections: LearningSection[] = [
   {
     id: 'dashboard',
@@ -27,6 +27,19 @@ export const beginnerSections: LearningSection[] = [
       'The **asset table** lists coins or tokens and amounts. That is where you confirm what you actually hold.',
       '**Recent transactions** at the bottom shows the latest sends and receives. Open **History** in the sidebar when you need the full list.',
       'When you are ready to move money, use **Send** or **Receive** in the sidebar.',
+    ],
+  },
+  {
+    id: 'portfolio',
+    navLabel: 'Portfolio',
+    title: 'Portfolio',
+    summary:
+      'Portfolio pulls together every wallet you own to show total value, a value-over-time chart, and how much each asset contributes — useful after you have balances in **Wallets**.',
+    steps: [
+      'In the **left sidebar**, click **Portfolio** (trending-up icon). The page title is **Overview**, with a note about combined value across wallets.',
+      'The top **card** shows **Total portfolio value** in large type, optional **change for the selected period**, and quick counts for **Wallets** and **Assets** (assets with value). If you hold nothing yet, totals stay at zero until you fund a wallet.',
+      'Open the **Portfolio value** section to see a line chart. Use the period chips (**1D**, **1W**, **1M**, **3M**, **1Y**) to change the time window; the chart is a prototype view built from your holdings and live catalogue prices.',
+      'Open **Asset allocation** for a doughnut chart and a ranked list: each row shows **symbol**, **name**, **value**, approximate **amount**, and **percentage** of the portfolio. Use it to see concentration in one coin before you send or rebalance.',
     ],
   },
   {
@@ -99,19 +112,6 @@ export const beginnerSections: LearningSection[] = [
       'Under **Add contact**, enter a **Name** (for example who you pay) and their wallet **Address** (`0x…`). Click **Save contact** — the list updates when the server accepts it.',
       'Under **Saved contacts**, each row shows the **name**, full **address**, and a **Remove** link if you no longer need that entry. An empty book shows **No contacts saved yet.**',
       'On **Send**, the optional **Select from contacts** dropdown and the **Manage address book** link both point back here — keep this list accurate before you rely on it for real transfers.',
-    ],
-  },
-  {
-    id: 'portfolio',
-    navLabel: 'Portfolio',
-    title: 'Portfolio',
-    summary:
-      'Portfolio pulls together every wallet you own to show total value, a value-over-time chart, and how much each asset contributes — useful after you have balances in **Wallets**.',
-    steps: [
-      'In the **left sidebar**, click **Portfolio** (trending-up icon). The page title is **Overview**, with a note about combined value across wallets.',
-      'The top **card** shows **Total portfolio value** in large type, optional **change for the selected period**, and quick counts for **Wallets** and **Assets** (assets with value). If you hold nothing yet, totals stay at zero until you fund a wallet.',
-      'Open the **Portfolio value** section to see a line chart. Use the period chips (**1D**, **1W**, **1M**, **3M**, **1Y**) to change the time window; the chart is a prototype view built from your holdings and live catalogue prices.',
-      'Open **Asset allocation** for a doughnut chart and a ranked list: each row shows **symbol**, **name**, **value**, approximate **amount**, and **percentage** of the portfolio. Use it to see concentration in one coin before you send or rebalance.',
     ],
   },
   {
